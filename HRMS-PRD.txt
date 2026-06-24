@@ -1,0 +1,546 @@
+ENTERPRISE WORKFORCE EXPERIENCE PLATFORM (EWXP)
+Product Requirements Document (PRD)
+
+1. Product Overview
+-------------------
+Product name: EWXP — Enterprise Workforce Experience Platform
+Former name: HRMS (Human Resource Management System)
+Positioning: AI-Powered Enterprise Workforce Experience Platform
+Purpose: Build the next-generation workforce platform that goes beyond traditional HRMS record-keeping to deliver intelligent employee experiences, AI-driven automation, and predictive workforce analytics.
+Target users: Employees, Managers, HR Business Partners, Recruiters, Payroll Staff, Administrators, CEO/Executives, Candidates.
+
+2. Core Philosophy
+-------------------
+"Most HRMS platforms only do record management. Our focus is on Employee Experience."
+
+Instead of just storing data, EWXP:
+- Understands natural language (HR Copilot)
+- Builds a Digital Employee Twin (timeline, projects, salary, performance, skills, learning, attendance, leaves, awards — one screen)
+- Provides AI Analytics that proactively tells you attrition risk, promotion due, skill gaps
+- Enables No-Code customization (forms, approvals, reports, fields, workflows)
+- Creates a Social HR layer (posts, recognition, achievements, announcements, knowledge sharing)
+- Supports a Plugin Marketplace to install optional modules without code
+
+3. Goals and Objectives
+-----------------------
+- Deliver an AI-first workforce experience platform that rivals Workday, Rippling, and Darwinbox
+- Replace traditional HRMS with natural language HR Copilot for employees, managers, and HR
+- Build a Digital Employee Twin consolidating all employee data in one view
+- Provide no-code workflow designer, form builder, and report builder
+- Enable predictive analytics: attrition risk, hiring forecast, burnout detection
+- Create an organization digital twin with interactive org charts and succession readiness
+- Build a unified communication hub with social features
+- Support a plugin marketplace for modular expansion
+- Ensure enterprise-grade compliance, audit logs, and role-based security
+
+4. Scope
+--------
+In Scope (Core Platform):
+- Employee Management & Digital Employee Twin (full CRUD)
+- Organization Structure & Interactive Org Chart (full CRUD)
+- Leave Management with multi-step workflow (Employee → Manager → HR → Payroll) (full CRUD with role gates)
+- Attendance Tracking with shift support and corrections (full CRUD)
+- Performance Management with review cycles and 360 feedback
+- Recruitment with full pipeline (Hiring Request → Approvals → AI Screening → Interview → Offer → Onboarding)
+- Expense Management workflow (Employee → Manager → Finance → Accounts → Reimbursement)
+- Promotion & Transfer workflows with multi-level approvals
+- Payroll Setup and processing
+- AI HR Copilot (natural language assistant)
+- AI Organization Brain (instant answers to workforce queries)
+- AI Resume Matching & Interview Questions
+- Predictive HR Analytics (attrition, hiring, burnout)
+- No-Code Form Builder, Report Builder, Workflow Designer
+- Custom Fields engine
+- Document Storage with expiry tracking
+- Social HR (posts, recognition, announcements, knowledge sharing)
+- Employee Timeline (visual journey from recruitment to alumni)
+- Skills Graph & Internal Talent Marketplace
+- Organization Digital Twin
+- Unified Communication Hub
+- Plugin Marketplace
+- Compliance Center (multi-country statutory packs)
+- Admin user management and role-based access
+- Reporting and export capabilities (CSV, Excel, PDF)
+- Audit Logging and Security
+
+Future Phase (planned but not fully implemented):
+- Mobile native apps (iOS/Android) with offline capabilities
+- Employee Super App (attendance, leave, payroll, chat, AI, learning, expense, travel, recognition, survey, community, QR, visitor, assets)
+- Benefits Administration (health insurance, retirement, enrollment)
+- Learning Management System (LMS) with course authoring
+- Grievance Management
+- Loan & Advances Management
+- Shift Scheduling & Workforce Planning
+- Contractor & Freelancer Management
+- Multi-language UI (Hinglish search supported in career portal; full i18n pending)
+- Additional currencies beyond INR (platform is INR-first as of v1 demo)
+- Third-party integrations (ERP, CRM, payroll systems)
+
+Implemented beyond original v1 scope (Phase 5 partial):
+- Public Career Portal with 17 open jobs, AI match, NL search, explain job, resume review
+- Candidate register/login (Candidate role) and My Applications pipeline tracker
+- Resume text + AI screening summary persisted on apply; auto Screening status
+- INR (₹) as default currency across payroll, expense, recruitment, assets, offers
+
+Out of Scope:
+- Full accounting or ERP system
+- Native mobile app development (web responsive only for v1)
+
+5. User Roles and Permissions
+-----------------------------
+- Administrator: full access to configuration, plugins, users, all modules, compliance center, custom fields
+- HR Manager: employee records, departments, leave/expense approve, performance, recruitment, reports, compliance, career workflows, assets, AI tools
+- Manager: employee/department views, leave/expense approve, performance reviews, promotion/transfer workflow steps, recruitment pipeline, reports view
+- Employee: own profile, submit own leave/expense, attendance, learning, social HR, AI Copilot, polls, discussions, tasks, meetings
+- Payroll Staff: payroll setup, processing, export, reports, approvals, employee list view, attendance view
+- Candidate: public career portal only — browse jobs (no login), must login to apply, track application pipeline, AI match/search/explain
+
+6. Core Workflows
+-----------------
+
+6.1 Recruitment Workflow
+------------------------
+Hiring Request → Department Head Approval → HR Approval → Budget Approval → Job Posting → Applications → AI Resume Screening → Recruiter Review → Interview Scheduling → Technical Interview → HR Interview → Salary Approval → Offer → Acceptance → Background Verification → Joining → Onboarding
+
+6.2 Leave Workflow
+------------------
+Employee → Manager → HR → Payroll → Attendance Sync → Notification
+
+6.3 Expense Workflow
+--------------------
+Employee → Manager → Finance → Accounts → Reimbursement
+
+6.4 Promotion Workflow
+----------------------
+Manager → HRBP → Department Head → CEO → Payroll Update
+
+6.5 Transfer Workflow
+---------------------
+Manager → HR → Department → IT → Payroll → Employee
+
+7. Functional Requirements
+--------------------------
+
+7.1 Employee Management & Digital Employee Twin
+- Create, read, update, delete employee records
+- Digital Employee Twin: timeline, projects, salary history, performance, skills, learning, attendance, leaves, awards — all on one screen
+- Store personal info, employment details, contact, emergency contact, documents
+- Employee status: active, probation, resigned, terminated
+- Employee Timeline: visual journey from joining date through promotions, transfers, achievements
+- Document storage with expiry tracking (visa, passport, contracts)
+
+7.2 Organization Structure
+- Interactive Organization Chart with headcount, vacancies, reporting lines, succession readiness
+- Manage departments, teams, job roles, grades
+- Assign employees to departments and managers
+- Organization Digital Twin: real-time view of structure
+
+7.3 Leave Management
+- Employee submits leave request
+- Workflow: Manager Approval → HR Approval → Payroll Sync → Notification
+- Available leave balance calculation
+- Leave status tracking: pending, approved, rejected, canceled
+- Leave history and entitlement overview
+
+7.4 Attendance
+- Daily attendance records with status (Present, Late, Absent, Half-Day)
+- Check-in and check-out time tracking
+- Manual attendance correction requests (date, corrected times, reason)
+- Attendance edit and delete (Admin/HRManager/Manager only — restricted)
+- Attendance reports and views
+
+7.5 Performance Management
+- Create review cycles and appraisal templates
+- 360-degree feedback collection
+- Managers rate employee goals, competencies, behavior
+- Store comments, ratings, overall score
+- Track review status: pending, in progress, completed
+
+7.6 Recruitment & Hiring
+- Full workflow: Hiring Request → Approvals → Job Posting → AI Screening → Interview → Offer → Onboarding
+- AI Resume Matching and ranking
+- AI Interview Question generation
+- Candidate status tracking through all pipeline stages (New → Screening → Interviewed → Offered → Hired/Rejected)
+- Interview scheduling and feedback
+- Offer management and acceptance (default currency: INR)
+- Background verification tracking
+- Onboarding trigger on joining
+
+7.6a Public Career Portal (Single-Company EWXP)
+- Public URL: /careers (no employee login required to browse)
+- Job listings: 17+ open requisitions across departments with LPA salary bands
+- AI Job Match % — semantic resume vs job description
+- Natural language job search (English + Hinglish)
+- Explain Job — AI summary of role fit and missing skills
+- AI Resume Review — ATS score and suggestions before apply
+- **Login required to apply** — Quick Apply redirects unauthenticated users to sign-in/register modal; after auth, user clicks Quick Apply again to open form (no auto-open)
+- Quick Apply form: first name, last name, email, phone, resume text; prevents duplicate applications
+- On apply: resume text and AI screening summary stored; status auto-set to Screening
+- Candidate Register / Login — separate Candidate role JWT (career_token)
+- My Applications — candidate-facing tracker with 6-step pipeline synced to HR recruitment module
+- Saved jobs and profile text in browser localStorage
+- Responsive UI: mobile nav drawer, filter panel (workplace, department, experience, location)
+- API: /api/careers/* (config, jobs, match, explain, resume-review, search, assistant, apply, register, login, applications)
+- Backend: `[Authorize(Roles = "Candidate")]` enforced on apply endpoint (was `[AllowAnonymous]`)
+
+7.7 Expense Management
+- Employee submits expense claims with receipts
+- Workflow: Manager Approval → Finance Review → Accounts → Reimbursement
+- Expense categories and budgets
+- Receipt upload and attachment
+
+7.8 Promotion & Transfer
+- Promotion workflow: Manager → HRBP → Department Head → CEO → Payroll Update
+- Transfer workflow: Manager → HR → Department → IT → Payroll → Employee
+- Salary and grade change tracking
+- Effective date management
+
+7.9 Payroll Data Setup
+- Define salary components, allowances, deductions
+- Map employees to pay structures
+- Tax and deduction rules (India-oriented: PF, Professional Tax, TDS in seed data)
+- Payroll processing and payslip generation
+- Export payroll data
+- All monetary amounts displayed in INR (₹) with en-IN locale formatting
+
+7.10 AI HR Copilot
+- Natural language HR assistant
+- Employee: "Kal leave apply kar do" → Done
+- Manager: "Meri team ka attendance dikhao" → Shows
+- CEO: "Iss month hiring cost kitni hui?" → Answers
+- Policy search: employee asks about company policy, AI answers from stored documents
+- Employee Summary, Meeting Summary, Performance Summary
+- Salary Insights, Skill Recommendations
+
+7.11 AI Organization Brain
+- Instant answers to workforce queries
+- "Marketing me kitne log hain?" → AI answers with current count
+- Department-wise headcount, attendance summary, leave trends
+- No manual searching — natural language input
+
+7.12 Predictive HR Analytics
+- System proactively identifies:
+  - Attrition Risk (High/Medium/Low) with reasons (salary below market, promotion due, manager rating low)
+  - Suggested actions: increase salary, training, manager discussion
+- Hiring forecast based on historical data
+- Burnout detection from attendance and leave patterns
+- Workforce cost prediction
+
+7.13 No-Code Builder
+- Form Builder: create custom forms without developer
+- Report Builder: business users create reports
+- Workflow Designer: drag-and-drop approval workflows with conditional routing
+- Custom Fields: add fields to any module without code
+
+7.14 Social HR
+- Company social feed: posts, recognition, achievements, announcements
+- Knowledge sharing and discussions
+- Birthday and anniversary notifications
+- Polls and surveys
+- Employee recognition and awards
+
+7.15 Skills Graph & Internal Talent Marketplace
+- Maintain employee skills inventory
+- AI recommends internal candidates before opening external hiring
+- Skill gap analysis
+- Career path recommendations based on performance and skills
+
+7.16 Organization Digital Twin
+- Interactive org chart
+- Real-time headcount and vacancy display
+- Reporting lines visualization
+- Succession readiness indicators
+
+7.17 Unified Communication Hub
+- Announcements
+- Recognition and achievements
+- Chats and discussions
+- Tasks and assignments
+- AI-powered summaries
+
+7.17a Digital Workplace Platform (Phase 6 — EWXP Differentiator)
+One Employee → One Login → Complete Workplace. Consolidates HRMS + collaboration tools.
+
+Meetings & Calendar:
+- Meeting dashboard: today's meetings, upcoming, pending invitations
+- Create meeting: title, type (HR/Team/Project/Client/Interview/Training/1:1/Town Hall), participants, department calendar, online link
+- AI: agenda generation, conflict detection, duration suggestion, MoM template, post-meeting summary
+- Meeting Lifecycle Engine: Create → AI Agenda → Availability → Invitations → Conduct → MoM → Tasks → Reminders
+
+Collaboration Hub:
+- Department channels (HR, Engineering, Finance, Sales, Marketing, General)
+- Create new channels from UI (name, description, type)
+- Messages with full CRUD (post, edit own, delete own or admin)
+- Announcements, pinned content within channels
+- Responsive split layout (mobile: channel list ↔ chat)
+
+Smart Inbox & Notification Engine:
+- Categories: Urgent, Reminder, Information, Task, Approval
+- Sources: Attendance, Leave, Payroll, Meeting, Interview, Performance, Documents, AI
+- Unified inbox: Today / Yesterday / Earlier, unread, starred
+- Future: Email, SMS, WhatsApp, Push, Teams, Slack delivery + user preferences
+
+Announcements:
+- Company / Department / Branch scope, priority, acknowledgement required, read tracking
+
+Tasks & Accountability:
+- Tasks from meetings with assignee, deadline, completion tracking
+- Full CRUD: create, edit, delete, assign, complete with priority levels
+- Links to Meeting Lifecycle Engine
+
+Approval Center:
+- Single screen for pending Leave, Expense, Promotion, Transfer, Recruitment approvals
+
+Role-Based Workspaces (planned):
+- Administrator, HR Manager, Manager, Employee, Payroll Staff — tailored home dashboards
+
+EWXP 5 Pillars:
+- People — HR, Recruitment, Employee, Payroll, Performance, Learning
+- Work — Meetings, Tasks, Calendar, Approvals, Workflow
+- Communicate — Announcements, Hubs, Chat, Notifications
+- Intelligence — AI Copilot, Analytics, Meeting AI
+- Platform — Admin, Security, Integrations, Audit
+
+7.18 Plugin Marketplace
+- Install optional modules without changing core code
+- Modules: Visitor Management, Fleet Management, Medical/Health, Transport, Cafeteria, Helpdesk, Travel, Inventory
+- Each module is independent and pluggable
+
+7.19 Compliance Center
+- Country-specific statutory packs (India, UAE, Singapore, UK, US)
+- Regulatory reporting
+- Mandatory training and certification tracking
+- Audit trail generation
+
+7.20 Reporting and Dashboards
+- Executive dashboard with KPIs
+- HR dashboard with headcount, leave, attendance, attrition
+- Custom report builder
+- CSV, Excel, PDF export
+- Scheduled report delivery
+
+7.21 Security and Compliance
+- Role-based access control with 6 roles (Administrator, HRManager, Manager, Employee, PayrollStaff, Candidate)
+- All 34 backend controllers enforce `[Authorize(Roles = "...")]` matching frontend UI gating
+- JWT authentication with token expiration (8h for employees, configurable for candidates)
+- Rejection reason prompts for all HR approval actions (Leave, Expense, Promotion, Transfer, Offer, Hiring Request)
+- Audit logs for all data changes, approvals, and logins
+- Input validation and server-side authorization
+- Secure AI API key management
+- Data encryption at rest and in transit
+
+8. Premium Features (Client-Impressing Differentiators)
+--------------------------------------------------------
+⭐ AI HR Copilot — Natural language HR assistant for employees, managers, and HR
+⭐ Dynamic Workflow Designer — Drag-and-drop approval workflows with conditional routing
+⭐ Digital Employee Journey — Visual timeline from recruitment to alumni
+⭐ Skills Graph & Internal Talent Marketplace — AI recommends internal candidates before external hiring
+⭐ Predictive HR Analytics — Attrition risk, hiring forecast, workforce cost prediction, burnout detection
+⭐ Organization Digital Twin — Interactive org chart with headcount, vacancies, reporting lines, succession readiness
+⭐ Unified Communication Hub — Announcements, recognition, chats, tasks, AI summaries in one place
+⭐ Plugin Marketplace — Install optional modules without changing core code
+⭐ Form & Report Builder — Business users create forms and reports without developer involvement
+⭐ Compliance Center — Country-specific statutory packs for multi-region support
+
+9. Technology Stack
+-------------------
+Frontend:
+- React 19, TypeScript
+- React Router for navigation
+- Ant Design 5 for component library
+- Zustand for state management
+- Axios for HTTP client
+- React Flow for workflow designer
+- Recharts / D3.js for analytics charts
+- React Query for server state management
+
+Backend:
+- .NET 10 Web API (ASP.NET Core)
+- Entity Framework Core for data access
+- JWT Authentication with role policies
+- SignalR for real-time notifications and chat
+- Groq AI (LLaMA 3 70B) via OpenAI-compatible API for AI features
+- Background jobs for scheduled reports and analytics
+
+Database:
+- Microsoft SQL Server
+- Entity Framework Core migrations
+- Full-text search for document and policy search
+
+Infrastructure:
+- Docker containerization
+- Azure / AWS deployment ready
+- Blob storage for documents and receipts
+- Redis cache for performance
+
+10. API Architecture
+--------------------
+- RESTful API endpoints
+- SignalR hubs for real-time features (chat, notifications)
+- GraphQL option for complex queries (future)
+- API versioning
+- Swagger/OpenAPI documentation
+
+11. UI Pages and Workflows
+--------------------------
+Public Pages:
+- Login page (employee HRMS)
+- Career portal / job listings (/careers)
+- Candidate register & sign-in (career portal modal)
+- Candidate application form (Quick Apply) + My Applications tracker
+
+Protected Pages:
+- Dashboard / Home with KPI widgets
+- AI HR Copilot chat interface
+- Digital Employee Twin profile
+- Employee directory with interactive org chart
+- Leave request and approval inbox
+- Attendance calendar and history
+- Performance review and appraisal forms
+- Recruitment pipeline (full workflow)
+- Expense submission and approval
+- Promotion / Transfer request and approval
+- Payroll setup and processing
+- Social HR feed
+- Skills and talent marketplace
+- No-Code Form Builder
+- No-Code Report Builder
+- Workflow Designer
+- Custom Fields manager
+- Plugin Marketplace
+- Compliance Center
+- Reports and analytics dashboards
+- Admin settings, user management, audit logs
+
+12. Database Entities
+---------------------
+Core:
+- Users, Roles, UserRoles (roles include Administrator, HRManager, Manager, Employee, PayrollStaff, Candidate)
+- Employees, EmployeeDocuments
+- Departments, Positions
+
+Workflows:
+- LeaveRequests, LeaveTypes, LeaveBalances
+- AttendanceRecords, AttendanceCorrections, Shifts
+- ExpenseReports, ExpenseItems, ExpenseApprovals
+- PromotionRequests, TransferRequests
+- HiringRequests, HiringApprovals
+
+Recruitment:
+- JobRequisitions, CandidateProfiles (ResumeText, ScreeningSummary, UserId link to Users)
+- InterviewSchedules, InterviewFeedback
+- Offers (Currency default INR), BackgroundChecks
+
+Performance:
+- PerformanceReviews, ReviewScores
+- ReviewCycles, FeedbackRequests
+
+Payroll:
+- PayrollStructures, SalaryComponents
+- PayrollRecords, Payslips
+- EmployeePayroll
+
+AI & Analytics:
+- AIUsageLog, AIChatHistory
+- AttritionPredictions, WorkforceForecasts
+
+Social:
+- Posts, Comments, Likes
+- Recognitions, Achievements
+- Announcements, Polls
+
+Platform:
+- AuditLogs, SystemSettings
+- CustomFields, CustomForms
+- WorkflowTemplates, WorkflowInstances
+- PluginRegistrations
+- NotificationLogs
+
+13. Testing Strategy
+--------------------
+- Unit tests for .NET services, controllers, data access
+- Integration tests for API endpoints
+- Component tests for React components
+- E2E tests for core workflows (recruitment, leave, expense)
+- AI response validation tests
+- Performance/load testing for concurrent users
+
+14. Deployment
+--------------
+- Development: local .NET and SQL Server
+- Staging: Docker containers for QA testing
+- Production: Azure/AWS with SQL Server, blob storage, Redis
+- CI/CD pipeline with GitHub Actions
+- Database migrations on deploy
+
+15. Industry Positioning
+------------------------
+Positioned as: AI-Powered Enterprise Workforce Experience Platform (EWXP)
+
+Differentiators vs Traditional HRMS:
+- Workday, SAP, Oracle: enterprise-grade but complex and expensive
+- BambooHR, Gusto: SMB-focused, limited AI
+- Rippling: unified HR+IT, strong but no AI copilot
+- Darwinbox: modern UX, emerging AI
+- Keka, Zoho People: good for India market, limited globally
+
+EWXP Advantage:
+- AI-first: HR Copilot, Organization Brain, Predictive Analytics
+- Employee Experience focus: Digital Twin, Social HR, Timeline
+- No-Code: Forms, Reports, Workflows without developers
+- Plugin Marketplace: extensible without core changes
+- Compliance Center: multi-country ready
+
+16. Future Enhancements
+-----------------------
+Phase 1 (Short-term):
+- AI HR Copilot with natural language
+- Digital Employee Twin page
+- Interactive Organization Chart
+- No-Code Form Builder & Custom Fields
+- Social HR feed
+- Expense workflow
+- Recruitment full pipeline workflow
+- Promotion/Transfer workflows
+
+Phase 2 (Medium-term):
+- AI Predictive Analytics (attrition, hiring forecast)
+- Dynamic Workflow Designer (drag-and-drop)
+- Plugin Marketplace with first 3 plugins
+- Skills Graph & Internal Talent Marketplace
+- Unified Communication Hub
+- Compliance Center (India + UAE)
+
+Phase 3 (Long-term):
+- Mobile native apps (iOS/Android)
+- Employee Super App
+- Benefits Administration
+- LMS with course authoring
+- Multi-language UI and additional currencies (INR implemented as default)
+- Advanced integrations (ERP, CRM, payroll)
+- AI Meeting Summary, Policy Search, Chatbot
+
+Phase 5 partial (implemented in demo):
+- Career portal candidate auth and application tracker
+- Login required to apply (no more anonymous applications)
+- Resume persistence and auto AI Screening on apply
+- 17 job requisitions seeded; responsive career UX
+- INR-first currency across HRMS
+- Rejection reason prompts on all HR approval flows (Leave, Expense, Promotion/Transfer, Offer, Hiring Request)
+- RBAC security hardening — all 34 backend controllers enforce proper role-based authorization
+
+17. Glossary
+------------
+- EWXP: Enterprise Workforce Experience Platform
+- HR Copilot: AI-powered natural language HR assistant
+- Digital Employee Twin: consolidated employee view with timeline
+- Organization Digital Twin: interactive real-time org chart
+- No-Code Builder: tools to create forms, reports, workflows without code
+- Plugin Marketplace: installable optional modules
+- Skills Graph: AI-powered skills inventory and recommendations
+- Attrition Risk: AI prediction of employee departure probability
+- Compliance Center: multi-country statutory management
+- Career Portal: public single-company job site with AI match and candidate application tracking
+- LPA: Lakhs Per Annum — standard Indian salary band notation on job listings
+
+End of PRD.

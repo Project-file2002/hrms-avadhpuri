@@ -1,0 +1,1853 @@
+Using launch settings from D:\my projects\hrms-avadhpuri-main\backend\Properties\launchSettings.json...
+Building...
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (454ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      CREATE DATABASE [HRMSDb];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (142ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      IF SERVERPROPERTY('EngineEdition') <> 5
+      BEGIN
+          ALTER DATABASE [HRMSDb] SET READ_COMMITTED_SNAPSHOT ON;
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Migrations[20411]
+      Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (27ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+      BEGIN
+          CREATE TABLE [__EFMigrationsHistory] (
+              [MigrationId] nvarchar(150) NOT NULL,
+              [ProductVersion] nvarchar(32) NOT NULL,
+              CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+          );
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (14ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619165444_InitialCreate'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AIUsageLogs] (
+          [Id] int NOT NULL IDENTITY,
+          [Feature] nvarchar(max) NOT NULL,
+          [Prompt] nvarchar(max) NOT NULL,
+          [Response] nvarchar(max) NULL,
+          [Success] bit NOT NULL,
+          [TokensUsed] int NULL,
+          [Timestamp] datetime2 NOT NULL,
+          [UserId] int NULL,
+          CONSTRAINT [PK_AIUsageLogs] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [LeaveTypes] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [DefaultDays] int NOT NULL,
+          [IsActive] bit NOT NULL,
+          CONSTRAINT [PK_LeaveTypes] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PayrollStructures] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_PayrollStructures] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [ReviewCycles] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [StartDate] datetime2 NOT NULL,
+          [EndDate] datetime2 NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          CONSTRAINT [PK_ReviewCycles] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Roles] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NOT NULL,
+          CONSTRAINT [PK_Roles] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [SystemSettings] (
+          [Id] int NOT NULL IDENTITY,
+          [Key] nvarchar(450) NOT NULL,
+          [Value] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [UpdatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_SystemSettings] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [SalaryComponents] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [Amount] decimal(18,2) NOT NULL,
+          [IsRecurring] bit NOT NULL,
+          [PayrollStructureId] int NOT NULL,
+          CONSTRAINT [PK_SalaryComponents] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_SalaryComponents_PayrollStructures_PayrollStructureId] FOREIGN KEY ([PayrollStructureId]) REFERENCES [PayrollStructures] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AttendanceCorrections] (
+          [Id] int NOT NULL IDENTITY,
+          [Date] datetime2 NOT NULL,
+          [CorrectedCheckIn] datetime2 NULL,
+          [CorrectedCheckOut] datetime2 NULL,
+          [Reason] nvarchar(max) NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [EmployeeId] int NOT NULL,
+          [ReviewedBy] int NULL,
+          [ReviewNotes] nvarchar(max) NULL,
+          CONSTRAINT [PK_AttendanceCorrections] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AttendanceRecords] (
+          [Id] int NOT NULL IDENTITY,
+          [Date] datetime2 NOT NULL,
+          [CheckInTime] datetime2 NULL,
+          [CheckOutTime] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [EmployeeId] int NOT NULL,
+          CONSTRAINT [PK_AttendanceRecords] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AuditLogs] (
+          [Id] int NOT NULL IDENTITY,
+          [Action] nvarchar(max) NOT NULL,
+          [EntityType] nvarchar(max) NOT NULL,
+          [EntityId] int NULL,
+          [Details] nvarchar(max) NULL,
+          [Timestamp] datetime2 NOT NULL,
+          [UserId] int NULL,
+          CONSTRAINT [PK_AuditLogs] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateProfiles] (
+          [Id] int NOT NULL IDENTITY,
+          [FirstName] nvarchar(max) NOT NULL,
+          [LastName] nvarchar(max) NOT NULL,
+          [Email] nvarchar(max) NOT NULL,
+          [Phone] nvarchar(max) NULL,
+          [ResumePath] nvarchar(max) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Source] nvarchar(max) NULL,
+          [MatchScore] decimal(5,2) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [JobRequisitionId] int NULL,
+          CONSTRAINT [PK_CandidateProfiles] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [InterviewSchedules] (
+          [Id] int NOT NULL IDENTITY,
+          [ScheduledDate] datetime2 NOT NULL,
+          [InterviewerName] nvarchar(max) NULL,
+          [InterviewType] nvarchar(max) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Feedback] nvarchar(max) NULL,
+          [Rating] int NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [CandidateId] int NOT NULL,
+          CONSTRAINT [PK_InterviewSchedules] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_InterviewSchedules_CandidateProfiles_CandidateId] FOREIGN KEY ([CandidateId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Departments] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [IsDeleted] bit NOT NULL,
+          [HeadId] int NULL,
+          CONSTRAINT [PK_Departments] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Employees] (
+          [Id] int NOT NULL IDENTITY,
+          [EmployeeCode] nvarchar(450) NOT NULL,
+          [FirstName] nvarchar(max) NOT NULL,
+          [LastName] nvarchar(max) NOT NULL,
+          [Email] nvarchar(450) NOT NULL,
+          [Phone] nvarchar(max) NULL,
+          [Position] nvarchar(max) NULL,
+          [DateOfBirth] datetime2 NULL,
+          [DateOfJoining] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Gender] nvarchar(max) NULL,
+          [Address] nvarchar(max) NULL,
+          [EmergencyContactName] nvarchar(max) NULL,
+          [EmergencyContactPhone] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [IsDeleted] bit NOT NULL,
+          [DepartmentId] int NULL,
+          [ManagerId] int NULL,
+          CONSTRAINT [PK_Employees] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Employees_Departments_DepartmentId] FOREIGN KEY ([DepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE SET NULL,
+          CONSTRAINT [FK_Employees_Employees_ManagerId] FOREIGN KEY ([ManagerId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [JobRequisitions] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Requirements] nvarchar(max) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ClosedAt] datetime2 NULL,
+          [DepartmentId] int NULL,
+          CONSTRAINT [PK_JobRequisitions] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_JobRequisitions_Departments_DepartmentId] FOREIGN KEY ([DepartmentId]) REFERENCES [Departments] ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [EmployeeDocuments] (
+          [Id] int NOT NULL IDENTITY,
+          [FileName] nvarchar(max) NOT NULL,
+          [FilePath] nvarchar(max) NOT NULL,
+          [DocumentType] nvarchar(max) NOT NULL,
+          [UploadedAt] datetime2 NOT NULL,
+          [EmployeeId] int NOT NULL,
+          CONSTRAINT [PK_EmployeeDocuments] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_EmployeeDocuments_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [EmployeePayrolls] (
+          [Id] int NOT NULL IDENTITY,
+          [EffectiveFrom] datetime2 NOT NULL,
+          [EffectiveTo] datetime2 NULL,
+          [EmployeeId] int NOT NULL,
+          [PayrollStructureId] int NOT NULL,
+          CONSTRAINT [PK_EmployeePayrolls] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_EmployeePayrolls_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_EmployeePayrolls_PayrollStructures_PayrollStructureId] FOREIGN KEY ([PayrollStructureId]) REFERENCES [PayrollStructures] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [LeaveBalances] (
+          [Id] int NOT NULL IDENTITY,
+          [TotalDays] decimal(5,1) NOT NULL,
+          [UsedDays] decimal(5,1) NOT NULL,
+          [Year] int NOT NULL,
+          [EmployeeId] int NOT NULL,
+          [LeaveTypeId] int NOT NULL,
+          CONSTRAINT [PK_LeaveBalances] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_LeaveBalances_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_LeaveBalances_LeaveTypes_LeaveTypeId] FOREIGN KEY ([LeaveTypeId]) REFERENCES [LeaveTypes] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [LeaveRequests] (
+          [Id] int NOT NULL IDENTITY,
+          [StartDate] datetime2 NOT NULL,
+          [EndDate] datetime2 NOT NULL,
+          [Reason] nvarchar(max) NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ReviewedAt] datetime2 NULL,
+          [EmployeeId] int NOT NULL,
+          [LeaveTypeId] int NOT NULL,
+          [ReviewedBy] int NULL,
+          [ReviewNotes] nvarchar(max) NULL,
+          CONSTRAINT [PK_LeaveRequests] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_LeaveRequests_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_LeaveRequests_LeaveTypes_LeaveTypeId] FOREIGN KEY ([LeaveTypeId]) REFERENCES [LeaveTypes] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PerformanceReviews] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [StartDate] datetime2 NOT NULL,
+          [EndDate] datetime2 NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Comments] nvarchar(max) NULL,
+          [OverallScore] decimal(5,2) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [EmployeeId] int NOT NULL,
+          [ReviewerId] int NOT NULL,
+          [CycleId] int NOT NULL,
+          CONSTRAINT [PK_PerformanceReviews] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PerformanceReviews_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_PerformanceReviews_Employees_ReviewerId] FOREIGN KEY ([ReviewerId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PerformanceReviews_ReviewCycles_CycleId] FOREIGN KEY ([CycleId]) REFERENCES [ReviewCycles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Users] (
+          [Id] int NOT NULL IDENTITY,
+          [Email] nvarchar(450) NOT NULL,
+          [PasswordHash] nvarchar(max) NOT NULL,
+          [FirstName] nvarchar(max) NOT NULL,
+          [LastName] nvarchar(max) NOT NULL,
+          [IsActive] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [LastLoginAt] datetime2 NULL,
+          [EmployeeId] int NULL,
+          CONSTRAINT [PK_Users] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Users_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [ReviewScores] (
+          [Id] int NOT NULL IDENTITY,
+          [Criteria] nvarchar(max) NOT NULL,
+          [Score] decimal(5,2) NOT NULL,
+          [Comments] nvarchar(max) NULL,
+          [ReviewId] int NOT NULL,
+          CONSTRAINT [PK_ReviewScores] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_ReviewScores_PerformanceReviews_ReviewId] FOREIGN KEY ([ReviewId]) REFERENCES [PerformanceReviews] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [UserRoles] (
+          [UserId] int NOT NULL,
+          [RoleId] int NOT NULL,
+          CONSTRAINT [PK_UserRoles] PRIMARY KEY ([UserId], [RoleId]),
+          CONSTRAINT [FK_UserRoles_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_UserRoles_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AttendanceCorrections_EmployeeId] ON [AttendanceCorrections] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AttendanceRecords_EmployeeId] ON [AttendanceRecords] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AuditLogs_UserId] ON [AuditLogs] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateProfiles_JobRequisitionId] ON [CandidateProfiles] ([JobRequisitionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Departments_HeadId] ON [Departments] ([HeadId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_EmployeeDocuments_EmployeeId] ON [EmployeeDocuments] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_EmployeePayrolls_EmployeeId] ON [EmployeePayrolls] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_EmployeePayrolls_PayrollStructureId] ON [EmployeePayrolls] ([PayrollStructureId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Employees_DepartmentId] ON [Employees] ([DepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Employees_Email] ON [Employees] ([Email]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Employees_EmployeeCode] ON [Employees] ([EmployeeCode]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Employees_ManagerId] ON [Employees] ([ManagerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_InterviewSchedules_CandidateId] ON [InterviewSchedules] ([CandidateId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_JobRequisitions_DepartmentId] ON [JobRequisitions] ([DepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_LeaveBalances_EmployeeId_LeaveTypeId_Year] ON [LeaveBalances] ([EmployeeId], [LeaveTypeId], [Year]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_LeaveBalances_LeaveTypeId] ON [LeaveBalances] ([LeaveTypeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_LeaveRequests_EmployeeId] ON [LeaveRequests] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_LeaveRequests_LeaveTypeId] ON [LeaveRequests] ([LeaveTypeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PerformanceReviews_CycleId] ON [PerformanceReviews] ([CycleId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PerformanceReviews_EmployeeId] ON [PerformanceReviews] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PerformanceReviews_ReviewerId] ON [PerformanceReviews] ([ReviewerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_ReviewScores_ReviewId] ON [ReviewScores] ([ReviewId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_SalaryComponents_PayrollStructureId] ON [SalaryComponents] ([PayrollStructureId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_SystemSettings_Key] ON [SystemSettings] ([Key]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_UserRoles_RoleId] ON [UserRoles] ([RoleId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Users_Email] ON [Users] ([Email]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Users_EmployeeId] ON [Users] ([EmployeeId]) WHERE [EmployeeId] IS NOT NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (14ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [AttendanceCorrections] ADD CONSTRAINT [FK_AttendanceCorrections_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [AttendanceRecords] ADD CONSTRAINT [FK_AttendanceRecords_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [AuditLogs] ADD CONSTRAINT [FK_AuditLogs_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [CandidateProfiles] ADD CONSTRAINT [FK_CandidateProfiles_JobRequisitions_JobRequisitionId] FOREIGN KEY ([JobRequisitionId]) REFERENCES [JobRequisitions] ([Id]) ON DELETE SET NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Departments] ADD CONSTRAINT [FK_Departments_Employees_HeadId] FOREIGN KEY ([HeadId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619165444_InitialCreate', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619193032_AddNoCodePlatform'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CustomFields] (
+          [Id] int NOT NULL IDENTITY,
+          [Module] nvarchar(max) NOT NULL,
+          [FieldName] nvarchar(max) NOT NULL,
+          [FieldType] nvarchar(max) NOT NULL,
+          [Options] nvarchar(max) NULL,
+          [IsRequired] bit NOT NULL,
+          [SortOrder] int NOT NULL,
+          [IsActive] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_CustomFields] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [FormDefinitions] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Schema] nvarchar(max) NOT NULL,
+          [IsActive] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_FormDefinitions] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [ReportDefinitions] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [DataSource] nvarchar(max) NOT NULL,
+          [Columns] nvarchar(max) NOT NULL,
+          [Filters] nvarchar(max) NULL,
+          [GroupBy] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_ReportDefinitions] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [WorkflowDefinitions] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Steps] nvarchar(max) NOT NULL,
+          [IsActive] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_WorkflowDefinitions] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CustomFieldValues] (
+          [Id] int NOT NULL IDENTITY,
+          [RecordId] int NOT NULL,
+          [Value] nvarchar(max) NOT NULL,
+          [CustomFieldId] int NOT NULL,
+          CONSTRAINT [PK_CustomFieldValues] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CustomFieldValues_CustomFields_CustomFieldId] FOREIGN KEY ([CustomFieldId]) REFERENCES [CustomFields] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [FormSubmissions] (
+          [Id] int NOT NULL IDENTITY,
+          [Data] nvarchar(max) NOT NULL,
+          [SubmittedBy] nvarchar(max) NOT NULL,
+          [SubmittedAt] datetime2 NOT NULL,
+          [FormDefinitionId] int NOT NULL,
+          CONSTRAINT [PK_FormSubmissions] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_FormSubmissions_FormDefinitions_FormDefinitionId] FOREIGN KEY ([FormDefinitionId]) REFERENCES [FormDefinitions] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [WorkflowInstances] (
+          [Id] int NOT NULL IDENTITY,
+          [RecordId] int NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CurrentStep] nvarchar(max) NOT NULL,
+          [Data] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [CompletedAt] datetime2 NULL,
+          [WorkflowDefinitionId] int NOT NULL,
+          CONSTRAINT [PK_WorkflowInstances] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_WorkflowInstances_WorkflowDefinitions_WorkflowDefinitionId] FOREIGN KEY ([WorkflowDefinitionId]) REFERENCES [WorkflowDefinitions] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CustomFieldValues_CustomFieldId] ON [CustomFieldValues] ([CustomFieldId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_FormSubmissions_FormDefinitionId] ON [FormSubmissions] ([FormDefinitionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_WorkflowInstances_WorkflowDefinitionId] ON [WorkflowInstances] ([WorkflowDefinitionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619193032_AddNoCodePlatform', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619193737_AddSocialHR'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [SocialPosts] (
+          [Id] int NOT NULL IDENTITY,
+          [Content] nvarchar(max) NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [ImageUrl] nvarchar(max) NULL,
+          [Tags] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [AuthorId] int NOT NULL,
+          CONSTRAINT [PK_SocialPosts] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_SocialPosts_Employees_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PostComments] (
+          [Id] int NOT NULL IDENTITY,
+          [Content] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [PostId] int NOT NULL,
+          [AuthorId] int NOT NULL,
+          CONSTRAINT [PK_PostComments] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PostComments_Employees_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Employees] ([Id]),
+          CONSTRAINT [FK_PostComments_SocialPosts_PostId] FOREIGN KEY ([PostId]) REFERENCES [SocialPosts] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PostLikes] (
+          [Id] int NOT NULL IDENTITY,
+          [PostId] int NOT NULL,
+          [UserId] int NOT NULL,
+          CONSTRAINT [PK_PostLikes] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PostLikes_SocialPosts_PostId] FOREIGN KEY ([PostId]) REFERENCES [SocialPosts] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PostComments_AuthorId] ON [PostComments] ([AuthorId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PostComments_PostId] ON [PostComments] ([PostId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PostLikes_PostId] ON [PostLikes] ([PostId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_SocialPosts_AuthorId] ON [SocialPosts] ([AuthorId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619193737_AddSocialHR', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619193945_AddExpenseModule'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [ExpenseReports] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [TotalAmount] decimal(18,2) NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ReviewedAt] datetime2 NULL,
+          [EmployeeId] int NOT NULL,
+          [ReviewedById] int NULL,
+          [ReviewNotes] nvarchar(max) NULL,
+          CONSTRAINT [PK_ExpenseReports] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_ExpenseReports_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_ExpenseReports_Employees_ReviewedById] FOREIGN KEY ([ReviewedById]) REFERENCES [Employees] ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [ExpenseLineItems] (
+          [Id] int NOT NULL IDENTITY,
+          [Category] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NOT NULL,
+          [Amount] decimal(18,2) NOT NULL,
+          [ExpenseDate] datetime2 NOT NULL,
+          [ReceiptPath] nvarchar(max) NULL,
+          [ExpenseReportId] int NOT NULL,
+          CONSTRAINT [PK_ExpenseLineItems] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_ExpenseLineItems_ExpenseReports_ExpenseReportId] FOREIGN KEY ([ExpenseReportId]) REFERENCES [ExpenseReports] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_ExpenseLineItems_ExpenseReportId] ON [ExpenseLineItems] ([ExpenseReportId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_ExpenseReports_EmployeeId] ON [ExpenseReports] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_ExpenseReports_ReviewedById] ON [ExpenseReports] ([ReviewedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619193945_AddExpenseModule', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619194358_AddRecruitmentPipeline'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [BackgroundChecks] (
+          [Id] int NOT NULL IDENTITY,
+          [Status] nvarchar(max) NOT NULL,
+          [VendorName] nvarchar(max) NULL,
+          [ReportPath] nvarchar(max) NULL,
+          [Notes] nvarchar(max) NULL,
+          [InitiatedAt] datetime2 NOT NULL,
+          [CompletedAt] datetime2 NULL,
+          [CandidateId] int NOT NULL,
+          [CandidateProfileId] int NULL,
+          CONSTRAINT [PK_BackgroundChecks] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_BackgroundChecks_CandidateProfiles_CandidateId] FOREIGN KEY ([CandidateId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_BackgroundChecks_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [HiringRequests] (
+          [Id] int NOT NULL IDENTITY,
+          [JobTitle] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Justification] nvarchar(max) NULL,
+          [Headcount] int NOT NULL,
+          [BudgetRangeLow] decimal(18,2) NULL,
+          [BudgetRangeHigh] decimal(18,2) NULL,
+          [EmploymentType] nvarchar(max) NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [DeptApprovalNotes] nvarchar(max) NULL,
+          [HrApprovalNotes] nvarchar(max) NULL,
+          [BudgetApprovalNotes] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [RequestedById] int NOT NULL,
+          [DepartmentId] int NULL,
+          [JobRequisitionId] int NULL,
+          CONSTRAINT [PK_HiringRequests] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_HiringRequests_Departments_DepartmentId] FOREIGN KEY ([DepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE SET NULL,
+          CONSTRAINT [FK_HiringRequests_Employees_RequestedById] FOREIGN KEY ([RequestedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_HiringRequests_JobRequisitions_JobRequisitionId] FOREIGN KEY ([JobRequisitionId]) REFERENCES [JobRequisitions] ([Id]) ON DELETE SET NULL
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Offers] (
+          [Id] int NOT NULL IDENTITY,
+          [Salary] decimal(18,2) NOT NULL,
+          [Currency] nvarchar(max) NULL,
+          [Benefits] nvarchar(max) NULL,
+          [StartDate] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [OfferLetterPath] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [AcceptedAt] datetime2 NULL,
+          [RejectedAt] datetime2 NULL,
+          [RejectionReason] nvarchar(max) NULL,
+          [CandidateId] int NOT NULL,
+          [ApprovedById] int NULL,
+          [CandidateProfileId] int NULL,
+          CONSTRAINT [PK_Offers] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Offers_CandidateProfiles_CandidateId] FOREIGN KEY ([CandidateId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_Offers_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]),
+          CONSTRAINT [FK_Offers_Employees_ApprovedById] FOREIGN KEY ([ApprovedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [OnboardingTasks] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [AssignedTo] nvarchar(max) NULL,
+          [IsCompleted] bit NOT NULL,
+          [CompletedAt] datetime2 NULL,
+          [CandidateId] int NOT NULL,
+          [CandidateProfileId] int NULL,
+          CONSTRAINT [PK_OnboardingTasks] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_OnboardingTasks_CandidateProfiles_CandidateId] FOREIGN KEY ([CandidateId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_OnboardingTasks_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_BackgroundChecks_CandidateId] ON [BackgroundChecks] ([CandidateId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_BackgroundChecks_CandidateProfileId] ON [BackgroundChecks] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_HiringRequests_DepartmentId] ON [HiringRequests] ([DepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_HiringRequests_JobRequisitionId] ON [HiringRequests] ([JobRequisitionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_HiringRequests_RequestedById] ON [HiringRequests] ([RequestedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Offers_ApprovedById] ON [Offers] ([ApprovedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Offers_CandidateId] ON [Offers] ([CandidateId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Offers_CandidateProfileId] ON [Offers] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_OnboardingTasks_CandidateId] ON [OnboardingTasks] ([CandidateId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_OnboardingTasks_CandidateProfileId] ON [OnboardingTasks] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619194358_AddRecruitmentPipeline', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619194847_AddPromotionTransferWorkflows'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PromotionRequests] (
+          [Id] int NOT NULL IDENTITY,
+          [CurrentPosition] nvarchar(max) NOT NULL,
+          [CurrentSalary] decimal(18,2) NOT NULL,
+          [ProposedPosition] nvarchar(max) NOT NULL,
+          [ProposedSalary] decimal(18,2) NOT NULL,
+          [Justification] nvarchar(max) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [ManagerNotes] nvarchar(max) NULL,
+          [HrbpNotes] nvarchar(max) NULL,
+          [DeptHeadNotes] nvarchar(max) NULL,
+          [CeoNotes] nvarchar(max) NULL,
+          [PayrollUpdated] bit NOT NULL,
+          [EmployeeId] int NOT NULL,
+          [RequestedById] int NOT NULL,
+          [ApprovedByManagerId] int NULL,
+          [ApprovedByHrbpId] int NULL,
+          [ApprovedByDeptHeadId] int NULL,
+          [ApprovedByCeoId] int NULL,
+          CONSTRAINT [PK_PromotionRequests] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PromotionRequests_Employees_ApprovedByCeoId] FOREIGN KEY ([ApprovedByCeoId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PromotionRequests_Employees_ApprovedByDeptHeadId] FOREIGN KEY ([ApprovedByDeptHeadId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PromotionRequests_Employees_ApprovedByHrbpId] FOREIGN KEY ([ApprovedByHrbpId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PromotionRequests_Employees_ApprovedByManagerId] FOREIGN KEY ([ApprovedByManagerId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PromotionRequests_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_PromotionRequests_Employees_RequestedById] FOREIGN KEY ([RequestedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [TransferRequests] (
+          [Id] int NOT NULL IDENTITY,
+          [CurrentPosition] nvarchar(max) NOT NULL,
+          [ProposedPosition] nvarchar(max) NOT NULL,
+          [Reason] nvarchar(max) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [ManagerNotes] nvarchar(max) NULL,
+          [HrNotes] nvarchar(max) NULL,
+          [DeptNotes] nvarchar(max) NULL,
+          [ItNotes] nvarchar(max) NULL,
+          [PayrollNotes] nvarchar(max) NULL,
+          [EmployeeNotes] nvarchar(max) NULL,
+          [EmployeeId] int NOT NULL,
+          [RequestedById] int NOT NULL,
+          [CurrentDepartmentId] int NOT NULL,
+          [ProposedDepartmentId] int NOT NULL,
+          [ApprovedByManagerId] int NULL,
+          [ApprovedByHrId] int NULL,
+          [ApprovedByDeptId] int NULL,
+          [ApprovedByItId] int NULL,
+          [ApprovedByPayrollId] int NULL,
+          [EmployeeAccepted] bit NOT NULL,
+          CONSTRAINT [PK_TransferRequests] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_TransferRequests_Departments_CurrentDepartmentId] FOREIGN KEY ([CurrentDepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Departments_ProposedDepartmentId] FOREIGN KEY ([ProposedDepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_ApprovedByDeptId] FOREIGN KEY ([ApprovedByDeptId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_ApprovedByHrId] FOREIGN KEY ([ApprovedByHrId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_ApprovedByItId] FOREIGN KEY ([ApprovedByItId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_ApprovedByManagerId] FOREIGN KEY ([ApprovedByManagerId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_ApprovedByPayrollId] FOREIGN KEY ([ApprovedByPayrollId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TransferRequests_Employees_RequestedById] FOREIGN KEY ([RequestedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PromotionRequests_ApprovedByCeoId] ON [PromotionRequests] ([ApprovedByCeoId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PromotionRequests_ApprovedByDeptHeadId] ON [PromotionRequests] ([ApprovedByDeptHeadId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PromotionRequests_ApprovedByHrbpId] ON [PromotionRequests] ([ApprovedByHrbpId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PromotionRequests_ApprovedByManagerId] ON [PromotionRequests] ([ApprovedByManagerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PromotionRequests_EmployeeId] ON [PromotionRequests] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PromotionRequests_RequestedById] ON [PromotionRequests] ([RequestedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_ApprovedByDeptId] ON [TransferRequests] ([ApprovedByDeptId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_ApprovedByHrId] ON [TransferRequests] ([ApprovedByHrId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_ApprovedByItId] ON [TransferRequests] ([ApprovedByItId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_ApprovedByManagerId] ON [TransferRequests] ([ApprovedByManagerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_ApprovedByPayrollId] ON [TransferRequests] ([ApprovedByPayrollId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_CurrentDepartmentId] ON [TransferRequests] ([CurrentDepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_EmployeeId] ON [TransferRequests] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_ProposedDepartmentId] ON [TransferRequests] ([ProposedDepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TransferRequests_RequestedById] ON [TransferRequests] ([RequestedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619194847_AddPromotionTransferWorkflows', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619195617_AddPollsDiscussionsSkills'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [DiscussionThreads] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Content] nvarchar(max) NOT NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [Tags] nvarchar(max) NULL,
+          [IsPinned] bit NOT NULL,
+          [ViewCount] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [CreatedById] int NOT NULL,
+          CONSTRAINT [PK_DiscussionThreads] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_DiscussionThreads_Employees_CreatedById] FOREIGN KEY ([CreatedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Polls] (
+          [Id] int NOT NULL IDENTITY,
+          [Question] nvarchar(max) NOT NULL,
+          [MultiVote] bit NOT NULL,
+          [IsActive] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ExpiresAt] datetime2 NULL,
+          [CreatedById] int NOT NULL,
+          CONSTRAINT [PK_Polls] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Polls_Employees_CreatedById] FOREIGN KEY ([CreatedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Skills] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          CONSTRAINT [PK_Skills] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [TalentPools] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [CreatedById] int NOT NULL,
+          CONSTRAINT [PK_TalentPools] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_TalentPools_Employees_CreatedById] FOREIGN KEY ([CreatedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [DiscussionReplies] (
+          [Id] int NOT NULL IDENTITY,
+          [Content] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [ThreadId] int NOT NULL,
+          [CreatedById] int NOT NULL,
+          CONSTRAINT [PK_DiscussionReplies] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_DiscussionReplies_DiscussionThreads_ThreadId] FOREIGN KEY ([ThreadId]) REFERENCES [DiscussionThreads] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_DiscussionReplies_Employees_CreatedById] FOREIGN KEY ([CreatedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PollOptions] (
+          [Id] int NOT NULL IDENTITY,
+          [Text] nvarchar(max) NOT NULL,
+          [PollId] int NOT NULL,
+          CONSTRAINT [PK_PollOptions] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PollOptions_Polls_PollId] FOREIGN KEY ([PollId]) REFERENCES [Polls] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [EmployeeSkills] (
+          [Id] int NOT NULL IDENTITY,
+          [ProficiencyLevel] int NOT NULL,
+          [EmployeeId] int NOT NULL,
+          [SkillId] int NOT NULL,
+          CONSTRAINT [PK_EmployeeSkills] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_EmployeeSkills_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_EmployeeSkills_Skills_SkillId] FOREIGN KEY ([SkillId]) REFERENCES [Skills] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [TalentPoolCandidates] (
+          [Id] int NOT NULL IDENTITY,
+          [Status] nvarchar(max) NOT NULL,
+          [Notes] nvarchar(max) NULL,
+          [AddedAt] datetime2 NOT NULL,
+          [TalentPoolId] int NOT NULL,
+          [EmployeeId] int NOT NULL,
+          CONSTRAINT [PK_TalentPoolCandidates] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_TalentPoolCandidates_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_TalentPoolCandidates_TalentPools_TalentPoolId] FOREIGN KEY ([TalentPoolId]) REFERENCES [TalentPools] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PollVotes] (
+          [Id] int NOT NULL IDENTITY,
+          [PollOptionId] int NOT NULL,
+          [UserId] int NOT NULL,
+          [VotedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_PollVotes] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PollVotes_PollOptions_PollOptionId] FOREIGN KEY ([PollOptionId]) REFERENCES [PollOptions] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_PollVotes_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_DiscussionReplies_CreatedById] ON [DiscussionReplies] ([CreatedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_DiscussionReplies_ThreadId] ON [DiscussionReplies] ([ThreadId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_DiscussionThreads_CreatedById] ON [DiscussionThreads] ([CreatedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_EmployeeSkills_EmployeeId_SkillId] ON [EmployeeSkills] ([EmployeeId], [SkillId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_EmployeeSkills_SkillId] ON [EmployeeSkills] ([SkillId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PollOptions_PollId] ON [PollOptions] ([PollId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Polls_CreatedById] ON [Polls] ([CreatedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_PollVotes_PollOptionId_UserId] ON [PollVotes] ([PollOptionId], [UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PollVotes_UserId] ON [PollVotes] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TalentPoolCandidates_EmployeeId] ON [TalentPoolCandidates] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TalentPoolCandidates_TalentPoolId] ON [TalentPoolCandidates] ([TalentPoolId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TalentPools_CreatedById] ON [TalentPools] ([CreatedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619195617_AddPollsDiscussionsSkills', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619200718_AddAssetManagement'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Assets] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [AssetTag] nvarchar(450) NOT NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [Model] nvarchar(max) NULL,
+          [SerialNumber] nvarchar(max) NULL,
+          [PurchaseDate] datetime2 NULL,
+          [PurchasePrice] decimal(18,2) NULL,
+          [WarrantyExpiry] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Notes] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_Assets] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AssetAllocations] (
+          [Id] int NOT NULL IDENTITY,
+          [AllocatedAt] datetime2 NOT NULL,
+          [ReturnedAt] datetime2 NULL,
+          [Notes] nvarchar(max) NULL,
+          [AssetId] int NOT NULL,
+          [EmployeeId] int NOT NULL,
+          CONSTRAINT [PK_AssetAllocations] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_AssetAllocations_Assets_AssetId] FOREIGN KEY ([AssetId]) REFERENCES [Assets] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_AssetAllocations_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AssetMaintenances] (
+          [Id] int NOT NULL IDENTITY,
+          [Description] nvarchar(max) NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [Cost] decimal(18,2) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [ScheduledDate] datetime2 NOT NULL,
+          [CompletedAt] datetime2 NULL,
+          [Notes] nvarchar(max) NULL,
+          [AssetId] int NOT NULL,
+          CONSTRAINT [PK_AssetMaintenances] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_AssetMaintenances_Assets_AssetId] FOREIGN KEY ([AssetId]) REFERENCES [Assets] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AssetAllocations_AssetId] ON [AssetAllocations] ([AssetId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AssetAllocations_EmployeeId] ON [AssetAllocations] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AssetMaintenances_AssetId] ON [AssetMaintenances] ([AssetId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Assets_AssetTag] ON [Assets] ([AssetTag]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619200718_AddAssetManagement', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619201108_AddTrainingModule'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Certifications] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Issuer] nvarchar(max) NULL,
+          [ExpiryDays] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_Certifications] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Courses] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [Instructor] nvarchar(max) NULL,
+          [DurationHours] float NOT NULL,
+          [MaxCapacity] int NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [CreatedById] int NULL,
+          CONSTRAINT [PK_Courses] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Courses_Employees_CreatedById] FOREIGN KEY ([CreatedById]) REFERENCES [Employees] ([Id]) ON DELETE SET NULL
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [EmployeeCertifications] (
+          [Id] int NOT NULL IDENTITY,
+          [ObtainedAt] datetime2 NOT NULL,
+          [ExpiryDate] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [CredentialUrl] nvarchar(max) NULL,
+          [EmployeeId] int NOT NULL,
+          [CertificationId] int NOT NULL,
+          CONSTRAINT [PK_EmployeeCertifications] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_EmployeeCertifications_Certifications_CertificationId] FOREIGN KEY ([CertificationId]) REFERENCES [Certifications] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_EmployeeCertifications_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [TrainingEnrollments] (
+          [Id] int NOT NULL IDENTITY,
+          [EnrolledAt] datetime2 NOT NULL,
+          [CompletedAt] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Score] float(5) NULL,
+          [CourseId] int NOT NULL,
+          [EmployeeId] int NOT NULL,
+          CONSTRAINT [PK_TrainingEnrollments] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_TrainingEnrollments_Courses_CourseId] FOREIGN KEY ([CourseId]) REFERENCES [Courses] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_TrainingEnrollments_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Courses_CreatedById] ON [Courses] ([CreatedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_EmployeeCertifications_CertificationId] ON [EmployeeCertifications] ([CertificationId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_EmployeeCertifications_EmployeeId_CertificationId] ON [EmployeeCertifications] ([EmployeeId], [CertificationId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_TrainingEnrollments_CourseId_EmployeeId] ON [TrainingEnrollments] ([CourseId], [EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TrainingEnrollments_EmployeeId] ON [TrainingEnrollments] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619201108_AddTrainingModule', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619201531_AddNotificationsDocuments'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Documents] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [FileName] nvarchar(max) NOT NULL,
+          [FileSize] bigint NOT NULL,
+          [FileType] nvarchar(max) NOT NULL,
+          [FilePath] nvarchar(max) NULL,
+          [UploadedAt] datetime2 NOT NULL,
+          [ExpiryDate] datetime2 NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [UploadedById] int NOT NULL,
+          [EmployeeId] int NULL,
+          CONSTRAINT [PK_Documents] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Documents_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE SET NULL,
+          CONSTRAINT [FK_Documents_Employees_UploadedById] FOREIGN KEY ([UploadedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Notifications] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Message] nvarchar(max) NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [Link] nvarchar(max) NULL,
+          [IsRead] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UserId] int NOT NULL,
+          CONSTRAINT [PK_Notifications] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Notifications_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Documents_EmployeeId] ON [Documents] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Documents_UploadedById] ON [Documents] ([UploadedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Notifications_UserId_IsRead] ON [Notifications] ([UserId], [IsRead]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619201531_AddNotificationsDocuments', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260619202932_AddComplianceModule'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PostComments] DROP CONSTRAINT [FK_PostComments_Employees_AuthorId];
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [PostComments] ADD CONSTRAINT [FK_PostComments_Employees_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Employees] ([Id]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260619202932_AddComplianceModule', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260620050749_AddCandidateTracking'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [CandidateProfiles] ADD [ResumeText] nvarchar(max) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [CandidateProfiles] ADD [ScreeningSummary] nvarchar(max) NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [CandidateProfiles] ADD [UserId] int NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateProfiles_UserId] ON [CandidateProfiles] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [CandidateProfiles] ADD CONSTRAINT [FK_CandidateProfiles_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE SET NULL;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260620050749_AddCandidateTracking', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260620065945_AddWorkplacePlatformPhase6'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (12ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Notifications] ADD [Category] nvarchar(max) NOT NULL DEFAULT N'';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Notifications] ADD [IsStarred] bit NOT NULL DEFAULT CAST(0 AS bit);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Notifications] ADD [Priority] nvarchar(max) NOT NULL DEFAULT N'';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [Notifications] ADD [Source] nvarchar(max) NOT NULL DEFAULT N'';
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Announcements] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Content] nvarchar(max) NOT NULL,
+          [Scope] nvarchar(max) NOT NULL,
+          [Priority] nvarchar(max) NOT NULL,
+          [AcknowledgementRequired] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ExpiresAt] datetime2 NULL,
+          [CreatedById] int NOT NULL,
+          [DepartmentId] int NULL,
+          CONSTRAINT [PK_Announcements] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Announcements_Departments_DepartmentId] FOREIGN KEY ([DepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE SET NULL,
+          CONSTRAINT [FK_Announcements_Employees_CreatedById] FOREIGN KEY ([CreatedById]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CollaborationChannels] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [ChannelType] nvarchar(max) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [DepartmentId] int NULL,
+          CONSTRAINT [PK_CollaborationChannels] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CollaborationChannels_Departments_DepartmentId] FOREIGN KEY ([DepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE SET NULL
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Meetings] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Agenda] nvarchar(max) NULL,
+          [MeetingType] nvarchar(max) NOT NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Priority] nvarchar(max) NOT NULL,
+          [Timezone] nvarchar(max) NOT NULL,
+          [Recurrence] nvarchar(max) NULL,
+          [Location] nvarchar(max) NULL,
+          [OnlineLink] nvarchar(max) NULL,
+          [AiSummary] nvarchar(max) NULL,
+          [AiMomTemplate] nvarchar(max) NULL,
+          [StartTime] datetime2 NOT NULL,
+          [EndTime] datetime2 NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          [OrganizerId] int NOT NULL,
+          [DepartmentId] int NULL,
+          CONSTRAINT [PK_Meetings] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Meetings_Departments_DepartmentId] FOREIGN KEY ([DepartmentId]) REFERENCES [Departments] ([Id]) ON DELETE SET NULL,
+          CONSTRAINT [FK_Meetings_Employees_OrganizerId] FOREIGN KEY ([OrganizerId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [AnnouncementReads] (
+          [Id] int NOT NULL IDENTITY,
+          [AnnouncementId] int NOT NULL,
+          [UserId] int NOT NULL,
+          [ReadAt] datetime2 NOT NULL,
+          [AcknowledgedAt] datetime2 NULL,
+          CONSTRAINT [PK_AnnouncementReads] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_AnnouncementReads_Announcements_AnnouncementId] FOREIGN KEY ([AnnouncementId]) REFERENCES [Announcements] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_AnnouncementReads_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [ChannelMessages] (
+          [Id] int NOT NULL IDENTITY,
+          [Content] nvarchar(max) NOT NULL,
+          [MessageType] nvarchar(max) NOT NULL,
+          [IsPinned] bit NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [ChannelId] int NOT NULL,
+          [AuthorId] int NOT NULL,
+          CONSTRAINT [PK_ChannelMessages] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_ChannelMessages_CollaborationChannels_ChannelId] FOREIGN KEY ([ChannelId]) REFERENCES [CollaborationChannels] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_ChannelMessages_Employees_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [MeetingParticipants] (
+          [Id] int NOT NULL IDENTITY,
+          [MeetingId] int NOT NULL,
+          [EmployeeId] int NOT NULL,
+          [ResponseStatus] nvarchar(max) NOT NULL,
+          [IsOptional] bit NOT NULL,
+          CONSTRAINT [PK_MeetingParticipants] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_MeetingParticipants_Employees_EmployeeId] FOREIGN KEY ([EmployeeId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_MeetingParticipants_Meetings_MeetingId] FOREIGN KEY ([MeetingId]) REFERENCES [Meetings] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [WorkTasks] (
+          [Id] int NOT NULL IDENTITY,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [Status] nvarchar(max) NOT NULL,
+          [Priority] nvarchar(max) NOT NULL,
+          [DueDate] datetime2 NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [CompletedAt] datetime2 NULL,
+          [AssignedToId] int NOT NULL,
+          [AssignedById] int NULL,
+          [MeetingId] int NULL,
+          CONSTRAINT [PK_WorkTasks] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_WorkTasks_Employees_AssignedById] FOREIGN KEY ([AssignedById]) REFERENCES [Employees] ([Id]) ON DELETE SET NULL,
+          CONSTRAINT [FK_WorkTasks_Employees_AssignedToId] FOREIGN KEY ([AssignedToId]) REFERENCES [Employees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_WorkTasks_Meetings_MeetingId] FOREIGN KEY ([MeetingId]) REFERENCES [Meetings] ([Id]) ON DELETE SET NULL
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_AnnouncementReads_AnnouncementId_UserId] ON [AnnouncementReads] ([AnnouncementId], [UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_AnnouncementReads_UserId] ON [AnnouncementReads] ([UserId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Announcements_CreatedById] ON [Announcements] ([CreatedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Announcements_DepartmentId] ON [Announcements] ([DepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_ChannelMessages_AuthorId] ON [ChannelMessages] ([AuthorId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_ChannelMessages_ChannelId] ON [ChannelMessages] ([ChannelId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CollaborationChannels_DepartmentId] ON [CollaborationChannels] ([DepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_MeetingParticipants_EmployeeId] ON [MeetingParticipants] ([EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_MeetingParticipants_MeetingId_EmployeeId] ON [MeetingParticipants] ([MeetingId], [EmployeeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Meetings_DepartmentId] ON [Meetings] ([DepartmentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Meetings_OrganizerId] ON [Meetings] ([OrganizerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_WorkTasks_AssignedById] ON [WorkTasks] ([AssignedById]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_WorkTasks_AssignedToId] ON [WorkTasks] ([AssignedToId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_WorkTasks_MeetingId] ON [WorkTasks] ([MeetingId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260620065945_AddWorkplacePlatformPhase6', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260623065049_AddPositionSkillRequirements'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [PositionSkillRequirements] (
+          [Id] int NOT NULL IDENTITY,
+          [Position] nvarchar(450) NOT NULL,
+          [MinimumProficiency] int NOT NULL,
+          [SkillId] int NOT NULL,
+          CONSTRAINT [PK_PositionSkillRequirements] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_PositionSkillRequirements_Skills_SkillId] FOREIGN KEY ([SkillId]) REFERENCES [Skills] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_PositionSkillRequirements_Position_SkillId] ON [PositionSkillRequirements] ([Position], [SkillId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_PositionSkillRequirements_SkillId] ON [PositionSkillRequirements] ([SkillId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260623065049_AddPositionSkillRequirements', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260623091148_AddExtendedCandidateProfile'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateAchievements] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [Type] nvarchar(max) NOT NULL,
+          [Title] nvarchar(max) NULL,
+          [Organization] nvarchar(max) NULL,
+          [Year] int NULL,
+          [Description] nvarchar(max) NULL,
+          [Url] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateAchievements] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateAchievements_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateAnswers] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [JobRequisitionId] int NOT NULL,
+          [QuestionText] nvarchar(max) NOT NULL,
+          [Answer] nvarchar(max) NULL,
+          [QuestionType] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateAnswers] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateAnswers_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_CandidateAnswers_JobRequisitions_JobRequisitionId] FOREIGN KEY ([JobRequisitionId]) REFERENCES [JobRequisitions] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateCertifications] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [CertificationName] nvarchar(max) NOT NULL,
+          [Issuer] nvarchar(max) NULL,
+          [IssueDate] datetime2 NULL,
+          [ExpiryDate] datetime2 NULL,
+          [CredentialId] nvarchar(max) NULL,
+          [CredentialUrl] nvarchar(max) NULL,
+          [CertificatePath] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateCertifications] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateCertifications_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateDocuments] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [DocType] nvarchar(max) NOT NULL,
+          [FileName] nvarchar(max) NOT NULL,
+          [FilePath] nvarchar(max) NULL,
+          [DocNumber] nvarchar(max) NULL,
+          [Verified] bit NULL,
+          [UploadedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_CandidateDocuments] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateDocuments_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateEducations] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [Level] nvarchar(max) NOT NULL,
+          [Institute] nvarchar(max) NULL,
+          [Degree] nvarchar(max) NULL,
+          [Specialization] nvarchar(max) NULL,
+          [BoardOrUniversity] nvarchar(max) NULL,
+          [PassingYear] int NULL,
+          [Cgpa] decimal(18,2) NULL,
+          [Percentage] decimal(18,2) NULL,
+          [Grade] nvarchar(max) NULL,
+          [IsCurrent] bit NULL,
+          [Achievements] nvarchar(max) NULL,
+          [Certificates] nvarchar(max) NULL,
+          [HasGap] bit NULL,
+          [GapReason] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateEducations] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateEducations_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateExperiences] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [CompanyName] nvarchar(max) NOT NULL,
+          [Designation] nvarchar(max) NULL,
+          [JoiningDate] datetime2 NULL,
+          [LeavingDate] datetime2 NULL,
+          [IsCurrent] bit NOT NULL,
+          [Location] nvarchar(max) NULL,
+          [EmploymentType] nvarchar(max) NULL,
+          [Industry] nvarchar(max) NULL,
+          [ManagerName] nvarchar(max) NULL,
+          [TeamSize] int NULL,
+          [Salary] decimal(18,2) NULL,
+          [ReasonForLeaving] nvarchar(max) NULL,
+          [Projects] nvarchar(max) NULL,
+          [Responsibilities] nvarchar(max) NULL,
+          [Achievements] nvarchar(max) NULL,
+          [TechnologiesUsed] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateExperiences] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateExperiences_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateLanguages] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [Language] nvarchar(max) NOT NULL,
+          [CanRead] bit NULL,
+          [CanWrite] bit NULL,
+          [CanSpeak] bit NULL,
+          [Proficiency] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateLanguages] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateLanguages_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateProfileExtendeds] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [ProfessionalStatus] nvarchar(max) NULL,
+          [MiddleName] nvarchar(max) NULL,
+          [PreferredName] nvarchar(max) NULL,
+          [Gender] nvarchar(max) NULL,
+          [DateOfBirth] datetime2 NULL,
+          [Nationality] nvarchar(max) NULL,
+          [MaritalStatus] nvarchar(max) NULL,
+          [ProfilePhotoPath] nvarchar(max) NULL,
+          [AlternateEmail] nvarchar(max) NULL,
+          [AlternatePhone] nvarchar(max) NULL,
+          [WhatsAppNumber] nvarchar(max) NULL,
+          [CurrentAddress] nvarchar(max) NULL,
+          [PermanentAddress] nvarchar(max) NULL,
+          [Country] nvarchar(max) NULL,
+          [State] nvarchar(max) NULL,
+          [City] nvarchar(max) NULL,
+          [ZipCode] nvarchar(max) NULL,
+          [NearestLandmark] nvarchar(max) NULL,
+          [CurrentCompany] nvarchar(max) NULL,
+          [EmployeeId] nvarchar(max) NULL,
+          [CurrentDesignation] nvarchar(max) NULL,
+          [Department] nvarchar(max) NULL,
+          [EmploymentType] nvarchar(max) NULL,
+          [CurrentCtc] decimal(18,2) NULL,
+          [ExpectedCtc] decimal(18,2) NULL,
+          [Negotiable] bit NULL,
+          [NoticePeriod] nvarchar(max) NULL,
+          [ImmediateJoiner] bit NULL,
+          [LastWorkingDay] datetime2 NULL,
+          [CurrentLocation] nvarchar(max) NULL,
+          [PreferredLocation] nvarchar(max) NULL,
+          [PreferredWorkMode] nvarchar(max) NULL,
+          [TotalExperienceMonths] int NULL,
+          [RelevantExperienceMonths] int NULL,
+          [LeadershipExperienceMonths] int NULL,
+          [TeamSizeManaged] int NULL,
+          [EmploymentTypePreferred] nvarchar(max) NULL,
+          [ShiftPreference] nvarchar(max) NULL,
+          [WillingToRelocate] bit NULL,
+          [PreferredCities] nvarchar(max) NULL,
+          [WillingToTravel] nvarchar(max) NULL,
+          [ResumeOriginalPath] nvarchar(max) NULL,
+          [ResumeVersion] nvarchar(max) NULL,
+          [CoverLetterText] nvarchar(max) NULL,
+          [CitizenshipStatus] nvarchar(max) NULL,
+          [VisaType] nvarchar(max) NULL,
+          [WorkPermit] nvarchar(max) NULL,
+          [SponsorshipRequired] bit NULL,
+          [PassportNumber] nvarchar(max) NULL,
+          [PassportExpiry] datetime2 NULL,
+          [EmergencyName] nvarchar(max) NULL,
+          [EmergencyRelationship] nvarchar(max) NULL,
+          [EmergencyPhone] nvarchar(max) NULL,
+          [EmergencyEmail] nvarchar(max) NULL,
+          [EmergencyAddress] nvarchar(max) NULL,
+          [AvailableFrom] datetime2 NULL,
+          [InterviewAvailability] nvarchar(max) NULL,
+          [PreferredTime] nvarchar(max) NULL,
+          [Timezone] nvarchar(max) NULL,
+          [ConsentInfoAccurate] bit NULL,
+          [ConsentPrivacyPolicy] bit NULL,
+          [ConsentResumeProcessing] bit NULL,
+          [ConsentBackgroundVerification] bit NULL,
+          [ConsentCommunication] bit NULL,
+          [DigitalSignature] nvarchar(max) NULL,
+          [DiversityDisability] nvarchar(max) NULL,
+          [DiversityVeteran] nvarchar(max) NULL,
+          [DiversityGenderIdentity] nvarchar(max) NULL,
+          [DiversityPronouns] nvarchar(max) NULL,
+          [DiversityEthnicity] nvarchar(max) NULL,
+          [DiversityReligion] nvarchar(max) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_CandidateProfileExtendeds] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateProfileExtendeds_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateProjects] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [ProjectName] nvarchar(max) NOT NULL,
+          [Client] nvarchar(max) NULL,
+          [Description] nvarchar(max) NULL,
+          [Duration] nvarchar(max) NULL,
+          [Role] nvarchar(max) NULL,
+          [Responsibilities] nvarchar(max) NULL,
+          [TeamSize] int NULL,
+          [TechnologyStack] nvarchar(max) NULL,
+          [GitHubUrl] nvarchar(max) NULL,
+          [LiveDemoUrl] nvarchar(max) NULL,
+          [Achievements] nvarchar(max) NULL,
+          [Challenges] nvarchar(max) NULL,
+          [Outcome] nvarchar(max) NULL,
+          [ScreenshotsPath] nvarchar(max) NULL,
+          [DemoVideoUrl] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateProjects] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateProjects_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateReferences] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [Name] nvarchar(max) NOT NULL,
+          [Company] nvarchar(max) NULL,
+          [Designation] nvarchar(max) NULL,
+          [Relationship] nvarchar(max) NULL,
+          [Email] nvarchar(max) NULL,
+          [Phone] nvarchar(max) NULL,
+          [YearsKnown] int NULL,
+          CONSTRAINT [PK_CandidateReferences] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateReferences_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateSkills] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [SkillName] nvarchar(max) NOT NULL,
+          [Category] nvarchar(max) NOT NULL,
+          [ProficiencyLevel] int NOT NULL,
+          [ExperienceMonths] int NULL,
+          [ProjectCount] int NULL,
+          [SelfRating] int NULL,
+          [Certified] bit NULL,
+          [LastUsed] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateSkills] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateSkills_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateSocialProfiles] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [Platform] nvarchar(max) NOT NULL,
+          [Url] nvarchar(max) NOT NULL,
+          [Username] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateSocialProfiles] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateSocialProfiles_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateStepDatas] (
+          [Id] int NOT NULL IDENTITY,
+          [ProfileId] int NOT NULL,
+          [StepKey] nvarchar(max) NOT NULL,
+          [JsonData] nvarchar(max) NOT NULL,
+          [SavedAt] datetime2 NOT NULL,
+          CONSTRAINT [PK_CandidateStepDatas] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [CandidateTrainings] (
+          [Id] int NOT NULL IDENTITY,
+          [CandidateProfileId] int NOT NULL,
+          [TrainingName] nvarchar(max) NOT NULL,
+          [Provider] nvarchar(max) NULL,
+          [Duration] nvarchar(max) NULL,
+          [CompletedDate] datetime2 NULL,
+          [CertificatePath] nvarchar(max) NULL,
+          [SkillsLearned] nvarchar(max) NULL,
+          CONSTRAINT [PK_CandidateTrainings] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_CandidateTrainings_CandidateProfiles_CandidateProfileId] FOREIGN KEY ([CandidateProfileId]) REFERENCES [CandidateProfiles] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [DynamicFormSections] (
+          [Id] int NOT NULL IDENTITY,
+          [SectionKey] nvarchar(max) NOT NULL,
+          [Title] nvarchar(max) NOT NULL,
+          [Description] nvarchar(max) NULL,
+          [DisplayOrder] int NOT NULL,
+          [IsActive] bit NOT NULL,
+          [ApplicableStatuses] nvarchar(max) NOT NULL,
+          [ConditionalLogic] nvarchar(max) NULL,
+          CONSTRAINT [PK_DynamicFormSections] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [DynamicFormFields] (
+          [Id] int NOT NULL IDENTITY,
+          [SectionId] int NOT NULL,
+          [FieldKey] nvarchar(max) NOT NULL,
+          [Label] nvarchar(max) NOT NULL,
+          [FieldType] nvarchar(max) NOT NULL,
+          [IsRequired] bit NOT NULL,
+          [DisplayOrder] int NOT NULL,
+          [Options] nvarchar(max) NULL,
+          [Placeholder] nvarchar(max) NULL,
+          [ValidationRegex] nvarchar(max) NULL,
+          [DefaultValue] nvarchar(max) NULL,
+          [ConditionalShow] nvarchar(max) NULL,
+          [ApplicableStatuses] nvarchar(max) NULL,
+          CONSTRAINT [PK_DynamicFormFields] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_DynamicFormFields_DynamicFormSections_SectionId] FOREIGN KEY ([SectionId]) REFERENCES [DynamicFormSections] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateAchievements_CandidateProfileId] ON [CandidateAchievements] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateAnswers_CandidateProfileId] ON [CandidateAnswers] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateAnswers_JobRequisitionId] ON [CandidateAnswers] ([JobRequisitionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateCertifications_CandidateProfileId] ON [CandidateCertifications] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateDocuments_CandidateProfileId] ON [CandidateDocuments] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateEducations_CandidateProfileId] ON [CandidateEducations] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateExperiences_CandidateProfileId] ON [CandidateExperiences] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateLanguages_CandidateProfileId] ON [CandidateLanguages] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_CandidateProfileExtendeds_CandidateProfileId] ON [CandidateProfileExtendeds] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateProjects_CandidateProfileId] ON [CandidateProjects] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateReferences_CandidateProfileId] ON [CandidateReferences] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateSkills_CandidateProfileId] ON [CandidateSkills] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateSocialProfiles_CandidateProfileId] ON [CandidateSocialProfiles] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_CandidateTrainings_CandidateProfileId] ON [CandidateTrainings] ([CandidateProfileId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_DynamicFormFields_SectionId] ON [DynamicFormFields] ([SectionId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260623091148_AddExtendedCandidateProfile', N'10.0.9');
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260623101322_AddComplianceTables'.
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      ALTER TABLE [ComplianceRecords] DROP CONSTRAINT [FK_ComplianceRecords_Employees_CompletedById];
+fail: Program[0]
+      An error occurred while seeding the database
+      Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot find the object "ComplianceRecords" because it does not exist or you do not have permissions.
+         at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+         at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+         at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+         at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+         at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+         at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+         at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+         at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+         at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQueryAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteAsync(IReadOnlyList`1 migrationCommands, IRelationalConnection connection, MigrationExecutionState executionState, Boolean beginTransaction, Boolean commitTransaction, Nullable`1 isolationLevel, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteAsync(IReadOnlyList`1 migrationCommands, IRelationalConnection connection, MigrationExecutionState executionState, Boolean beginTransaction, Boolean commitTransaction, Nullable`1 isolationLevel, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQueryAsync(IReadOnlyList`1 migrationCommands, IRelationalConnection connection, MigrationExecutionState executionState, Boolean commitTransaction, Nullable`1 isolationLevel, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateImplementationAsync(DbContext context, String targetMigration, MigrationExecutionState state, Boolean useTransaction, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateImplementationAsync(DbContext context, String targetMigration, MigrationExecutionState state, Boolean useTransaction, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<>c.<<MigrateAsync>b__22_1>d.MoveNext()
+      --- End of stack trace from previous location ---
+         at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.MigrateAsync(String targetMigration, CancellationToken cancellationToken)
+         at Program.<Main>$(String[] args) in D:\my projects\hrms-avadhpuri-main\backend\Program.cs:line 83
+      ClientConnectionId:f3e73d5e-899c-4420-8e2f-3d38873ff668
+      Error Number:4902,State:1,Class:16
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5096
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\my projects\hrms-avadhpuri-main\backend
